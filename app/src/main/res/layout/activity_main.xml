@@ -5,12 +5,9 @@
     android:layout_height="match_parent"
     tools:context="androidhistory.andreiadev.com.androidhistory.MainActivity">
 
-    <GridView
-        android:id="@+id/gv_android_versions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:numColumns="auto_fit"
-        android:verticalSpacing="8dp"
-        android:horizontalSpacing="8dp"/>
+    <FrameLayout
+        android:id="@+id/container_android_versions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </android.support.constraint.ConstraintLayout>
