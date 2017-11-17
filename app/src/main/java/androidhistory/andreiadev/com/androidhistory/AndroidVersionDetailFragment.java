@@ -18,7 +18,9 @@ public class AndroidVersionDetailFragment extends Fragment {
     ImageView ivVersionImage;
     TextView tvVersionName;
     TextView tvVersion;
-    TextView tvVersionDesctiption;
+    TextView tvVersionDescription;
+
+    AndroidVersion currentAndroidVersion;
 
     public AndroidVersionDetailFragment() {
     }
@@ -28,23 +30,25 @@ public class AndroidVersionDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_android_version_detail, container, false);
 
-        database = AppDatabase.getDatabaseInstance(getContext());
-
         ivVersionImage = view.findViewById(R.id.iv_version_image_detail);
         tvVersionName = view.findViewById(R.id.tv_version_name_detail);
         tvVersion = view.findViewById(R.id.tv_version_detail);
-        tvVersionDesctiption = view.findViewById(R.id.tv_version_description_detail);
+        tvVersionDescription = view.findViewById(R.id.tv_version_description_detail);
 
-        bindViews(view);
+        database = AppDatabase.getDatabaseInstance(getContext());
+
+        if (getArguments() != null && getArguments().getInt("androidVersionId") != 0) {
+            currentAndroidVersion = database.androidVersionDao().getAndroidVersion(getArguments().getInt("androidVersionId"));
+            bindViews();
+        }
+
         return view;
     }
 
-    private void bindViews(View view) {
-        AndroidVersion androidVersion = database.androidVersionDao().getAndroidVersion(8);
-
-        Glide.with(getContext()).load(androidVersion.getImage()).into(ivVersionImage);
-        tvVersionName.setText(androidVersion.getName());
-        tvVersion.setText(androidVersion.getVersion());
-        tvVersionDesctiption.setText(androidVersion.getDescription());
+    private void bindViews() {
+        Glide.with(getContext()).load(currentAndroidVersion.getImage()).into(ivVersionImage);
+        tvVersionName.setText(currentAndroidVersion.getName());
+        tvVersion.setText(currentAndroidVersion.getVersion());
+        tvVersionDescription.setText(currentAndroidVersion.getDescription());
     }
 }

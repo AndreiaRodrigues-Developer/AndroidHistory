@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +26,11 @@ public class AndroidVersionsListFragment extends Fragment implements AdapterView
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_android_versions_list, container, false);
 
-        database = AppDatabase.getDatabaseInstance(getContext());
+        database = AppDatabase.getDatabaseInstance(getActivity());
         insertAndroidVersionsMock();
 
         gridViewAndroidVersions = view.findViewById(R.id.gv_android_versions);
-        gridViewAndroidVersions.setAdapter(new AndroidVersionsAdapter(getContext(), getAndroidVersionsMock()));
+        gridViewAndroidVersions.setAdapter(new AndroidVersionsAdapter(getActivity(), getAndroidVersionsMock()));
         gridViewAndroidVersions.setOnItemClickListener(this);
         return view;
     }
@@ -76,11 +75,17 @@ public class AndroidVersionsListFragment extends Fragment implements AdapterView
         return androidVersionsList;
     }
 
-
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Toast.makeText(getContext(), "" + getAndroidVersionsMock().get(i).getName(), Toast.LENGTH_SHORT).show();
+        Bundle bundle = new Bundle();
+        bundle.putInt("androidVersionId", getAndroidVersionsMock().get(i).getId());
 
-
+        AndroidVersionDetailFragment fragment = new AndroidVersionDetailFragment();
+        fragment.setArguments(bundle);
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container_android_versions, fragment, AndroidVersionDetailFragment.class.getSimpleName())
+                .addToBackStack(AndroidVersionDetailFragment.class.getSimpleName())
+                .commit();
     }
 }
