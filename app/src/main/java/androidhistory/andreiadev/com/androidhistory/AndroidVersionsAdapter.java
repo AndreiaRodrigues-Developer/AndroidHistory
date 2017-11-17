@@ -27,22 +27,22 @@ public class AndroidVersionsAdapter extends BaseAdapter {
     }
 
     public AndroidVersion getItem(int i) {
-        return (AndroidVersion) this.androidVersionsList.get(i);
+        return androidVersionsList.get(i);
     }
 
     public long getItemId(int i) {
-        return Long.parseLong(((AndroidVersion) this.androidVersionsList.get(i)).getId());
+        return (long) androidVersionsList.get(i).getId();
     }
 
     public View getView(int i, View convertView, ViewGroup viewGroup) {
-        AndroidVersion androidVersion = (AndroidVersion) this.androidVersionsList.get(i);
+        AndroidVersion androidVersion = androidVersionsList.get(i);
         if (convertView == null) {
             LayoutInflater layoutInflater = LayoutInflater.from(this.context);
-            convertView = layoutInflater.inflate(R.layout.item_android_versions, (ViewGroup) null);
+            convertView = layoutInflater.inflate(R.layout.item_android_versions, null);
         }
 
-        ImageView tvVersionImage = (ImageView) convertView.findViewById(R.id.iv_version_image);
-        TextView tvVersionName = (TextView) convertView.findViewById(R.id.tv_version_image);
+        ImageView tvVersionImage = convertView.findViewById(R.id.iv_version_image);
+        TextView tvVersionName = convertView.findViewById(R.id.tv_version_image);
         Glide.with(convertView.getContext()).load(androidVersion.getImage()).into(tvVersionImage);
         tvVersionName.setText(androidVersion.getName());
         return convertView;
