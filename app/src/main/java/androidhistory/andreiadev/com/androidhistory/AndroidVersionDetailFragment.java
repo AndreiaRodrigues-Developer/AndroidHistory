@@ -37,9 +37,11 @@ public class AndroidVersionDetailFragment extends Fragment {
 
         database = AppDatabase.getDatabaseInstance(getContext());
 
-        if (getArguments() != null && getArguments().getInt("androidVersionId") != 0) {
-            currentAndroidVersion = database.androidVersionDao().getAndroidVersion(getArguments().getInt("androidVersionId"));
-            bindViews();
+        if (getArguments() != null) {
+            if (getArguments().getInt("androidVersionId") != 0) {
+                currentAndroidVersion = database.androidVersionDao().getAndroidVersion(getArguments().getInt("androidVersionId"));
+                bindViews();
+            }
         }
 
         return view;

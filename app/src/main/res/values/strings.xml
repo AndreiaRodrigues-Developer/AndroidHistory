@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AndroidHistory</string>
+
+    <string name="version_image_transition_key">transitionVersionImage</string>
 </resources>
