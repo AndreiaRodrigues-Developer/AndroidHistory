@@ -1,8 +1,11 @@
 package androidhistory.andreiadev.com.androidhistory;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.transition.Fade;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +46,32 @@ public class AndroidVersionsListFragment extends Fragment implements AdapterView
         }
     }
 
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("androidVersionId", getAndroidVersionsMock().get(i).getId());
+        //bundle.putString(getActivity().getResources().getString(R.string.version_image_transition_key), "transition" + i);
+
+        AndroidVersionDetailFragment fragment = new AndroidVersionDetailFragment();
+        fragment.setArguments(bundle);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            fragment.setSharedElementEnterTransition(new DetailsTransition());
+            fragment.setEnterTransition(new Fade());
+            fragment.setSharedElementReturnTransition(new DetailsTransition());
+            setExitTransition(new Fade());
+
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .addSharedElement(((ConstraintLayout) view)
+                            .getChildAt(0), getActivity().getResources().getString(R.string.version_image_transition_key))
+                    .addToBackStack(AndroidVersionDetailFragment.class.getSimpleName())
+                    .replace(R.id.container_android_versions, fragment, AndroidVersionDetailFragment.class.getSimpleName())
+                    .commit();
+        }
+    }
+
     private List<AndroidVersion> getAndroidVersionsMock() {
 
         List<AndroidVersion> androidVersionsList = new ArrayList<>();
@@ -75,17 +104,4 @@ public class AndroidVersionsListFragment extends Fragment implements AdapterView
         return androidVersionsList;
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Bundle bundle = new Bundle();
-        bundle.putInt("androidVersionId", getAndroidVersionsMock().get(i).getId());
-
-        AndroidVersionDetailFragment fragment = new AndroidVersionDetailFragment();
-        fragment.setArguments(bundle);
-        getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.container_android_versions, fragment, AndroidVersionDetailFragment.class.getSimpleName())
-                .addToBackStack(AndroidVersionDetailFragment.class.getSimpleName())
-                .commit();
-    }
 }
