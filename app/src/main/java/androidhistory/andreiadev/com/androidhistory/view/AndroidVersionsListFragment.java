@@ -1,4 +1,4 @@
-package androidhistory.andreiadev.com.androidhistory;
+package androidhistory.andreiadev.com.androidhistory.view;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +14,10 @@ import android.widget.GridView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidhistory.andreiadev.com.androidhistory.datasource.AndroidVersion;
+import androidhistory.andreiadev.com.androidhistory.datasource.AppDatabase;
+import androidhistory.andreiadev.com.androidhistory.R;
 
 public class AndroidVersionsListFragment extends Fragment implements AdapterView.OnItemClickListener {
 

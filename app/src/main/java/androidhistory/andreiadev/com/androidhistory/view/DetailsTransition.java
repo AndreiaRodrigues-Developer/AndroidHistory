@@ -1,4 +1,4 @@
-package androidhistory.andreiadev.com.androidhistory;
+package androidhistory.andreiadev.com.androidhistory.view;
 
 import android.os.Build;
 import android.support.annotation.RequiresApi;
