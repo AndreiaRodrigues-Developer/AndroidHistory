@@ -1,4 +1,4 @@
-package androidhistory.andreiadev.com.androidhistory;
+package androidhistory.andreiadev.com.androidhistory.datasource;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;

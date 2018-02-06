@@ -1,4 +1,4 @@
-package androidhistory.andreiadev.com.androidhistory;
+package androidhistory.andreiadev.com.androidhistory.view;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -19,6 +19,9 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
 import java.util.List;
+
+import androidhistory.andreiadev.com.androidhistory.datasource.AndroidVersion;
+import androidhistory.andreiadev.com.androidhistory.R;
 
 public class AndroidVersionsAdapter extends BaseAdapter {
 

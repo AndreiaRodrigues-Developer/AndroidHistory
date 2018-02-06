@@ -1,7 +1,10 @@
-package androidhistory.andreiadev.com.androidhistory;
+package androidhistory.andreiadev.com.androidhistory.view;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import androidhistory.andreiadev.com.androidhistory.R;
+import androidhistory.andreiadev.com.androidhistory.view.AndroidVersionsListFragment;
 
 public class MainActivity extends AppCompatActivity {
 
