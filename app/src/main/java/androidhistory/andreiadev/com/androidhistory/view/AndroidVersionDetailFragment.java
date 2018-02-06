@@ -1,4 +1,4 @@
-package androidhistory.andreiadev.com.androidhistory;
+package androidhistory.andreiadev.com.androidhistory.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+
+import androidhistory.andreiadev.com.androidhistory.datasource.AndroidVersion;
+import androidhistory.andreiadev.com.androidhistory.datasource.AppDatabase;
+import androidhistory.andreiadev.com.androidhistory.R;
 
 public class AndroidVersionDetailFragment extends Fragment {
 
