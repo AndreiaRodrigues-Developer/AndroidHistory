@@ -17,6 +17,9 @@ public interface AndroidVersionDao {
     AndroidVersion getAndroidVersion(int id);
 
     @Insert
+    void insertListOfAndroidVersion(List<AndroidVersion> messages);
+
+    @Insert
     void insertAndroidVersion(AndroidVersion androidVersion);
 
     @Delete

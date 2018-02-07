@@ -6,18 +6,27 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.transition.Fade;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import androidhistory.andreiadev.com.androidhistory.R;
 import androidhistory.andreiadev.com.androidhistory.datasource.AndroidVersion;
 import androidhistory.andreiadev.com.androidhistory.datasource.AppDatabase;
-import androidhistory.andreiadev.com.androidhistory.R;
 
 public class AndroidVersionsListFragment extends Fragment implements AdapterView.OnItemClickListener {
 
@@ -34,28 +43,47 @@ public class AndroidVersionsListFragment extends Fragment implements AdapterView
         View view = inflater.inflate(R.layout.fragment_android_versions_list, container, false);
 
         database = AppDatabase.getDatabaseInstance(getActivity());
-        insertAndroidVersionsMock();
 
         gridViewAndroidVersions = view.findViewById(R.id.gv_android_versions);
-        gridViewAndroidVersions.setAdapter(new AndroidVersionsAdapter(getActivity(), getAndroidVersionsMock()));
         gridViewAndroidVersions.setOnItemClickListener(this);
+
+        loadAndroidVersions();
+
         return view;
     }
 
-    private void insertAndroidVersionsMock() {
+    private void loadAndroidVersions() {
         if (database.androidVersionDao().getAllAndroidVersions().size() == 0) {
-            for (AndroidVersion androidVersion : getAndroidVersionsMock()) {
-                database.androidVersionDao().insertAndroidVersion(androidVersion);
-            }
+            final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+            Query query = databaseReference.orderByKey();
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    List<AndroidVersion> androidVersionsList = new ArrayList<>();
+                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                        GenericTypeIndicator<List<AndroidVersion>> t = new GenericTypeIndicator<List<AndroidVersion>>() {
+                        };
+                        androidVersionsList = singleSnapshot.getValue(t);
+                        database.androidVersionDao().insertListOfAndroidVersion(androidVersionsList);
+                    }
+                    gridViewAndroidVersions.setAdapter(new AndroidVersionsAdapter(getActivity(), androidVersionsList));
+                    Log.d(getActivity().getClass().getSimpleName(), "onDataChange(): Data loaded with success.");
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.e(getActivity().getClass().getSimpleName(), "onCancelled(): " + databaseError.getMessage());
+                }
+            });
+        } else {
+            gridViewAndroidVersions.setAdapter(new AndroidVersionsAdapter(getActivity(), database.androidVersionDao().getAllAndroidVersions()));
         }
     }
-
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Bundle bundle = new Bundle();
-        bundle.putInt("androidVersionId", getAndroidVersionsMock().get(i).getId());
-        //bundle.putString(getActivity().getResources().getString(R.string.version_image_transition_key), "transition" + i);
+        bundle.putInt("androidVersionId", database.androidVersionDao().getAllAndroidVersions().get(i).getId());
 
         AndroidVersionDetailFragment fragment = new AndroidVersionDetailFragment();
         fragment.setArguments(bundle);
@@ -74,38 +102,6 @@ public class AndroidVersionsListFragment extends Fragment implements AdapterView
                     .replace(R.id.container_android_versions, fragment, AndroidVersionDetailFragment.class.getSimpleName())
                     .commit();
         }
-    }
-
-    private List<AndroidVersion> getAndroidVersionsMock() {
-
-        List<AndroidVersion> androidVersionsList = new ArrayList<>();
-        androidVersionsList.add(new AndroidVersion(1, "Cupcake", "1.5",
-                "This is the Cupcake Android version.", " ", "https://assets.hongkiat.com/uploads/android-evolution/android-cupcake.jpg"));
-        androidVersionsList.add(new AndroidVersion(2, "Donut", "1.6",
-                "This is the Donut Android version.", " ", "https://s3.amazonaws.com/user-media.venngage.com/584531-2331ed11b8a0fb7e284862a3f8b079c0.png"));
-        androidVersionsList.add(new AndroidVersion(3, "Eclair", "2.0 - 2.1",
-                "This is the Eclair Android version.", " ", "http://i1-news.softpedia-static.com/images/news2/Android-SDK-Now-Features-Android-2-0-Eclair-Support-2.png"));
-        androidVersionsList.add(new AndroidVersion(4, "Froyo", "2.2 - 2.2.3",
-                "This is the Froyo Android version.", " ", "https://images.techhive.com/images/idge/imported/article/ctw/2010/06/11/android-22-upgrade-list-100375844-orig.jpg"));
-        androidVersionsList.add(new AndroidVersion(5, "Gingerbread", "2.3 - 2.3.7",
-                "This is the Gingerbread Android version.", " ", "https://i-cdn.phonearena.com/images/article/88079-image/Future-Play-Store-apps-will-no-longer-run-on-Android-2.3-Gingerbread.jpg"));
-        androidVersionsList.add(new AndroidVersion(6, "Honeycomb", "3 - 3.2.6",
-                "This is the Honeycomb Android version.", " ", "https://tctechcrunch2011.files.wordpress.com/2011/02/honeycombbee.png"));
-        androidVersionsList.add(new AndroidVersion(7, "Ice Cream Sandwich", "4.0 - 4.0.4",
-                "This is the Ice Cream Sandwich Android version.", " ", "https://www.androidcentral.com/sites/androidcentral.com/files/postimages/9274/11x05101719.jpg"));
-        androidVersionsList.add(new AndroidVersion(8, "Jelly Bean", "4.1 - 4.3.1",
-                "This is the Jelly Bean Android version.", " ", "http://www.androidz.com.br/portal/wp-content/uploads/2012/07/android-jelly-bean1.jpg"));
-        androidVersionsList.add(new AndroidVersion(9, "KitKat", "4.4 - 4.4.4",
-                "This is the KitKat Android version.", " ", "https://www.android.com/static/2016/img/share/oreo-lg.jpg"));
-        androidVersionsList.add(new AndroidVersion(10, "Lollipop", "5.0 - 5.1.1",
-                "This is the Lollipop Android version.", " ", "http://img.talkandroid.com/uploads/2014/10/android_lollipop_waving.png"));
-        androidVersionsList.add(new AndroidVersion(11, "Marshmallow", "6.0 - 6.0.1",
-                "This is the Marshmallow Android version.", " ", "https://img.talkandroid.com/uploads/2015/08/android_marshmallow_large.jpg"));
-        androidVersionsList.add(new AndroidVersion(12, "Nougat", "7.0 - 7.1.2",
-                "This is the Nougat Android version.", " ", "https://www.android.com/static/2016/img/share/n-lg.png"));
-        androidVersionsList.add(new AndroidVersion(13, "Oreo", "8",
-                "This is the Oreo Android version.", " ", "https://timedotcom.files.wordpress.com/2017/08/android-oreo.png"));
-        return androidVersionsList;
     }
 
 }

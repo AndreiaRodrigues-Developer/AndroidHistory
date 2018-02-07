@@ -17,6 +17,9 @@ public class AndroidVersion {
     private String releaseDate;
     private String image;
 
+    public AndroidVersion() {
+    }
+
     public AndroidVersion(int id, String name, String version, String description, String releaseDate, String image) {
         this.id = id;
         this.name = name;
